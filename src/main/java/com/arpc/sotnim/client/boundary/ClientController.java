@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class ClientController {
 
-
     @PostMapping("/api/v1/clients")
     @ResponseStatus(HttpStatus.CREATED)
     public Client createClient(@RequestBody CreateClientRequest createClientRequest) {
