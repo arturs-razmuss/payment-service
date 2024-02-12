@@ -1,5 +1,6 @@
 package com.arpc.sotnim.client.entity;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.GeneratedValue;
@@ -29,6 +30,7 @@ public class Client {
     private String name;
     private String email;
     @CreatedDate
+    @Column(nullable = false, updatable = false)
     private Instant createdAt;
     @LastModifiedDate
     private Instant updatedAt;
