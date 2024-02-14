@@ -1,6 +1,6 @@
 package com.arpc.sotnim.client.control;
 
-import com.arpc.sotnim.client.boundary.CreateClientRequest;
+import com.arpc.sotnim.client.boundary.dto.CreateClientRequest;
 import com.arpc.sotnim.client.entity.Client;
 import com.arpc.sotnim.client.entity.ClientRepository;
 import lombok.RequiredArgsConstructor;

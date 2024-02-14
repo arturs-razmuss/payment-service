@@ -1,5 +1,6 @@
 package com.arpc.sotnim.client.boundary;
 
+import com.arpc.sotnim.client.boundary.dto.CreateClientRequest;
 import com.arpc.sotnim.client.control.ClientService;
 import com.arpc.sotnim.client.entity.Client;
 import org.junit.jupiter.api.Test;

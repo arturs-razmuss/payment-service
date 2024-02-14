@@ -1,5 +1,6 @@
-package com.arpc.sotnim.core.boundary;
+package com.arpc.sotnim.core.boundary.dto;
 
+import com.arpc.sotnim.core.boundary.ErrorCodes;
 import lombok.Getter;
 import lombok.ToString;
 

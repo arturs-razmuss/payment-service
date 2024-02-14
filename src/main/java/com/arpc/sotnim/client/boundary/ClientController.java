@@ -1,5 +1,7 @@
 package com.arpc.sotnim.client.boundary;
 
+import com.arpc.sotnim.client.boundary.dto.CreateClientRequest;
+import com.arpc.sotnim.client.boundary.dto.CreateClientResponse;
 import com.arpc.sotnim.client.control.ClientService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

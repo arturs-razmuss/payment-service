@@ -1,4 +1,4 @@
-package com.arpc.sotnim.client.boundary;
+package com.arpc.sotnim.client.boundary.dto;
 
 import java.time.Instant;
 

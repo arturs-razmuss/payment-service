@@ -1,4 +1,4 @@
-package com.arpc.sotnim.account.boundary;
+package com.arpc.sotnim.account.boundary.dto;
 
 import java.time.Instant;
 

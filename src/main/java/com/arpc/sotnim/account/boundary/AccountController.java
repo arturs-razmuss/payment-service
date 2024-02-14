@@ -1,6 +1,8 @@
 package com.arpc.sotnim.account.boundary;
 
-import com.arpc.sotnim.core.boundary.RestResponse;
+import com.arpc.sotnim.account.boundary.dto.CreateAccountRequest;
+import com.arpc.sotnim.account.boundary.dto.CreateAccountResponse;
+import com.arpc.sotnim.core.boundary.dto.RestResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
