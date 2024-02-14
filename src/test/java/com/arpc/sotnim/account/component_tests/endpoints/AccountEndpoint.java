@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClientResponseException;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Supplier;
@@ -19,17 +20,19 @@ public class AccountEndpoint {
 
     private final TestRestTemplate restTemplate;
 
-    public InvocationResult<AccountDouble> createAccount(Long clientId, Map<String, String> clientData) {
-        var interim = restTemplate.exchange(
-                RequestEntity
-                        .post("/api/v1/clients/{clientId}/accounts", clientId)
-                        .body(clientData),
-                new ParameterizedTypeReference<String>() {});
-
+    public InvocationResult<AccountCreated> createAccount(String clientId, Map<String, String> clientData) {
         return wrap(() -> restTemplate.exchange(
                 RequestEntity
                         .post("/api/v1/clients/{clientId}/accounts", clientId)
                         .body(clientData),
+                new ParameterizedTypeReference<>() {}));
+    }
+
+    public InvocationResult<List<AccountDto>> getAccounts(String clientId) {
+        return wrap(() -> restTemplate.exchange(
+                RequestEntity
+                        .get("/api/v1/clients/{clientId}/accounts", clientId)
+                        .build(),
                 new ParameterizedTypeReference<>() {}));
     }
 
@@ -50,12 +53,25 @@ public class AccountEndpoint {
             return new InvocationResult<>(true, null, e);
         }
 
-        public T getBody() {
+        public T getResponseData() {
             return Optional.ofNullable(responseEntity.getBody()).orElseThrow().getData();
         }
     }
 
-    public record AccountDouble(String accountId, String createdAt) {
+    public record AccountCreated(String accountId, String createdAt) {
+    }
+
+    public record AccountDto(
+            String accountId,
+            MoneyAmountDto balance,
+            String clientId
+    ) {
+    }
+
+    public record MoneyAmountDto(
+            String amount,
+            String currency
+    ) {
     }
 
 }

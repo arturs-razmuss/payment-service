@@ -13,8 +13,8 @@ import java.time.Instant;
 
 @Entity
 @Builder
-@NoArgsConstructor
-@AllArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @ToString
 @EqualsAndHashCode
