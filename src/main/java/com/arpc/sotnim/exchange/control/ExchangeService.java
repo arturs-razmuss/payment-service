@@ -1,4 +1,4 @@
-package com.arpc.sotnim.currency.control;
+package com.arpc.sotnim.exchange.control;
 
 import org.springframework.stereotype.Service;
 
@@ -9,7 +9,7 @@ import javax.money.convert.ExchangeRateProvider;
 import javax.money.convert.MonetaryConversions;
 
 @Service
-public class CurrencyService {
+public class ExchangeService {
 
     public ExchangeRate getExchangeRate(CurrencyUnit sourceCurrency, CurrencyUnit targetCurrency) {
         //moneta provides multiple remote data sources and local caching on file system satisfying resiliency requirements

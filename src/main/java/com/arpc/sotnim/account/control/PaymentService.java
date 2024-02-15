@@ -5,6 +5,7 @@ import com.arpc.sotnim.account.entity.AccountRepository;
 import com.arpc.sotnim.account.entity.Payment;
 import com.arpc.sotnim.account.entity.PaymentRepository;
 import com.arpc.sotnim.account.entity.PaymentRequest;
+import com.arpc.sotnim.exchange.control.ExchangeService;
 import lombok.RequiredArgsConstructor;
 import org.javamoney.moneta.Money;
 import org.springframework.stereotype.Service;
@@ -20,6 +21,7 @@ public class PaymentService {
 
     private final AccountRepository accountRepository;
     private final PaymentRepository paymentRepository;
+    private final ExchangeService exchangeService;
 
     @Transactional
     public void transfer(TransferRequest request) {
@@ -27,6 +29,7 @@ public class PaymentService {
                 .orElseThrow(withCode(ACCOUNT_NOT_FOUND));
         var creditAccount = accountRepository.findById(request.targetAccountId())
                 .orElseThrow(withCode(ACCOUNT_NOT_FOUND));
+
         var paymentRequest = new PaymentRequest(Money.of(request.instructedAmount().amount(), request.instructedAmount().currency()));
 
         var payment = Payment.initiate(debitAccount, creditAccount, paymentRequest);

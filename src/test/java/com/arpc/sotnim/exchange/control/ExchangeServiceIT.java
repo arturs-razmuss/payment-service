@@ -1,14 +1,18 @@
-package com.arpc.sotnim.currency.control;
+package com.arpc.sotnim.exchange.control;
 
-import com.arpc.sotnim.ComponentTest;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-class CurrencyServiceTest extends ComponentTest {
-    @Autowired
-    CurrencyService currencyService;
+class ExchangeServiceIT {
+
+    ExchangeService currencyService;
+
+    @BeforeEach
+    void setUp() {
+        currencyService = new ExchangeService();
+    }
 
     @Test
     void getExchangeRate() {
