@@ -1,10 +1,12 @@
 package com.arpc.sotnim.account.control;
 
+import com.arpc.sotnim.account.boundary.dto.TransferRequest;
 import com.arpc.sotnim.account.entity.AccountRepository;
 import com.arpc.sotnim.account.entity.Payment;
 import com.arpc.sotnim.account.entity.PaymentRepository;
 import com.arpc.sotnim.account.entity.PaymentRequest;
 import lombok.RequiredArgsConstructor;
+import org.javamoney.moneta.Money;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,13 +22,14 @@ public class PaymentService {
     private final PaymentRepository paymentRepository;
 
     @Transactional
-    public void transfer(PaymentRequest request) {
+    public void transfer(TransferRequest request) {
         var debitAccount = accountRepository.findById(request.sourceAccountId())
                 .orElseThrow(withCode(ACCOUNT_NOT_FOUND));
         var creditAccount = accountRepository.findById(request.targetAccountId())
                 .orElseThrow(withCode(ACCOUNT_NOT_FOUND));
+        var paymentRequest = new PaymentRequest(Money.of(request.instructedAmount().amount(), request.instructedAmount().currency()));
 
-        var transfer = new Payment(debitAccount, creditAccount, request);
-        paymentRepository.save(transfer);
+        var payment = Payment.initiate(debitAccount, creditAccount, paymentRequest);
+        paymentRepository.save(payment);
     }
 }

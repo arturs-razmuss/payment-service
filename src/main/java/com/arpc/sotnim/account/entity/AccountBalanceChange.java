@@ -3,6 +3,7 @@ package com.arpc.sotnim.account.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.data.annotation.Immutable;
 
 import java.math.BigDecimal;
 
@@ -12,12 +13,12 @@ import java.math.BigDecimal;
 @Getter
 @ToString
 @EqualsAndHashCode
+@Immutable
 public class AccountBalanceChange {
 
-    public AccountBalanceChange(Long accountId, int accountVersion, Payment payment, BigDecimal amount) {
+    public AccountBalanceChange(Long accountId, int accountVersion, BigDecimal amount) {
         this.accountId = accountId;
         this.accountVersion = accountVersion;
-        this.payment = payment;
         this.amount = amount;
     }
 
@@ -30,7 +31,8 @@ public class AccountBalanceChange {
     private int accountVersion;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @Setter
+    @Setter(AccessLevel.PACKAGE)
+    @ToString.Exclude
     private Payment payment;
 
     private BigDecimal amount;

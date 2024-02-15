@@ -3,6 +3,7 @@ package com.arpc.sotnim.account.entity;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.Immutable;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.money.MonetaryAmount;
@@ -18,6 +19,7 @@ import java.util.List;
 @ToString
 @EqualsAndHashCode
 @EntityListeners(AuditingEntityListener.class)
+@Immutable
 public class Payment {
 
     @Id
@@ -38,23 +40,26 @@ public class Payment {
     @Column(nullable = false, updatable = false)
     private Instant createdAt;
 
+    public static Payment initiate(Account debitAccount, Account creditAccount, PaymentRequest request) {
+        var payment = new Payment();
+        payment.requestData = mapToRequestData(request);
+        payment.addBalanceChange(debitAccount.debit(payment));
+        payment.addBalanceChange(creditAccount.credit(payment));
+        return payment;
+    }
+
+    public List<AccountBalanceChange> getBalanceChanges() {
+        return List.copyOf(balanceChanges);
+    }
+
     private void addBalanceChange(AccountBalanceChange change) {
         balanceChanges.add(change);
         change.setPayment(this);
     }
 
-    public Payment(Account debitAccount, Account creditAccount, PaymentRequest request) {
-        requestData = mapToRequestData(request);
-        this.addBalanceChange(debitAccount.debit(this));
-        this.addBalanceChange(creditAccount.credit(this));
-        //TODO: Ensure balance change sum is 0
-    }
-
     private static RequestData mapToRequestData(PaymentRequest request) {
         return RequestData.builder()
-                .sourceAccountId(request.sourceAccountId())
-                .targetAccountId(request.targetAccountId())
-                .targetAmount(request.amount())
+                .targetAmount(request.targetAmount())
                 .build();
     }
 
@@ -66,8 +71,6 @@ public class Payment {
     @ToString
     @EqualsAndHashCode
     public static class RequestData {
-        private Long sourceAccountId;
-        private Long targetAccountId;
         private MonetaryAmount targetAmount;
     }
 }

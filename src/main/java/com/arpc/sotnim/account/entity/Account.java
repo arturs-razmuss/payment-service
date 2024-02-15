@@ -32,7 +32,7 @@ public class Account {
 
     private String name;
 
-    @AttributeOverride(name = "amount", column = @Column(name = "balance_amount"))
+    @AttributeOverride(name = "targetAmount", column = @Column(name = "balance_amount"))
     @AttributeOverride(name = "currency", column = @Column(name = "balance_currency"))
     @CompositeType(MonetaryAmountType.class)
     private MonetaryAmount balance;
@@ -53,13 +53,14 @@ public class Account {
         if (newBalance.isNegative()) {
             throw new RequestProcessingException(ErrorCodes.BALANCE_NOT_SUFFICIENT);
         }
-        return new AccountBalanceChange(accountId, version, payment, negatedAmount.getNumber().numberValue(BigDecimal.class));
+        balance = newBalance;
+        return new AccountBalanceChange(accountId, version, negatedAmount.getNumber().numberValue(BigDecimal.class));
     }
 
     AccountBalanceChange credit(Payment payment) {
         var amount = payment.getRequestData().getTargetAmount();
         balance = balance.add(amount);
-        return new AccountBalanceChange(accountId, version, payment, amount.getNumber().numberValue(BigDecimal.class));
+        return new AccountBalanceChange(accountId, version, amount.getNumber().numberValue(BigDecimal.class));
     }
 
 }
