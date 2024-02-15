@@ -11,6 +11,7 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.money.MonetaryAmount;
+import javax.money.MonetaryException;
 import java.math.BigDecimal;
 import java.time.Instant;
 
@@ -59,7 +60,11 @@ public class Account {
 
     AccountBalanceChange credit(Payment payment) {
         var amount = payment.getRequestData().getTargetAmount();
-        balance = balance.add(amount);
+        try {
+            balance = balance.add(amount);
+        } catch (MonetaryException e) {
+            throw new RequestProcessingException(ErrorCodes.BAD_CURRENCY);
+        }
         return new AccountBalanceChange(accountId, version, amount.getNumber().numberValue(BigDecimal.class));
     }
 

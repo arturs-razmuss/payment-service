@@ -11,7 +11,6 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
-
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PROTECTED)

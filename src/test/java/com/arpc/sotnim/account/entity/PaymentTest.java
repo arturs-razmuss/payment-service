@@ -1,5 +1,6 @@
 package com.arpc.sotnim.account.entity;
 
+import com.arpc.sotnim.core.boundary.RequestProcessingException;
 import org.javamoney.moneta.Money;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.BeforeEach;
@@ -10,7 +11,10 @@ import org.junit.jupiter.params.provider.CsvSource;
 import java.math.BigDecimal;
 import java.util.Optional;
 
+import static com.arpc.sotnim.core.boundary.ErrorCodes.BAD_CURRENCY;
+import static com.arpc.sotnim.core.boundary.ErrorCodes.BALANCE_NOT_SUFFICIENT;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class PaymentTest {
 
@@ -62,8 +66,35 @@ class PaymentTest {
         var creditBalanceChange = getBalanceChangeForAccount(payment, targetAccount.getAccountId()).orElseThrow();
         assertThat(debitBalanceChange.getAmount()).isEqualByComparingTo(new BigDecimal("-5"));
         assertThat(creditBalanceChange.getAmount()).isEqualByComparingTo(new BigDecimal("5"));
+    }
 
+    @Test
+    void shouldPreventPaymentCreationWhenSourceBalanceFallsBelowZero() {
+        assertThatThrownBy(() -> Payment.initiate(
+                sourceAccount,
+                targetAccount,
+                new PaymentRequest(Money.of(11, "USD")))
+        )
+                .isExactlyInstanceOf(RequestProcessingException.class)
+                .extracting(it -> ((RequestProcessingException) it).getErrorCode())
+                .isEqualTo(BALANCE_NOT_SUFFICIENT);
+    }
 
+    @Test
+    void shouldPreventPaymentCreationWhenTargetCurrencyIsDifferent() {
+        var targetAccount = Account.builder()
+                .accountId(2L)
+                .balance(Money.of(9999.99, "EUR"))
+                .build();
+
+        assertThatThrownBy(() -> Payment.initiate(
+                sourceAccount,
+                targetAccount,
+                new PaymentRequest(Money.of(5, "USD")))
+        )
+                .isExactlyInstanceOf(RequestProcessingException.class)
+                .extracting(it -> ((RequestProcessingException) it).getErrorCode())
+                .isEqualTo(BAD_CURRENCY);
     }
 
     @NotNull

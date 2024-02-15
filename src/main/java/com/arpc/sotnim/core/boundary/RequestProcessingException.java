@@ -1,5 +1,8 @@
 package com.arpc.sotnim.core.boundary;
 
+import lombok.Getter;
+
+@Getter
 public class RequestProcessingException extends RuntimeException {
 
     private final ErrorCodes errorCode;
