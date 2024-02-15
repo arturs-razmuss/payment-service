@@ -1,14 +1,12 @@
 package com.arpc.sotnim.account.entity;
 
-import io.hypersistence.utils.hibernate.type.money.MonetaryAmountType;
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.CompositeType;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Immutable;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import javax.money.MonetaryAmount;
+import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
@@ -27,8 +25,7 @@ public class Payment {
     @GeneratedValue
     private Long transactionId;
 
-    @Embedded
-    private RequestData requestData;
+    private BigDecimal exchangeRate;
 
     @OneToMany(
             mappedBy = "payment",
@@ -41,11 +38,11 @@ public class Payment {
     @Column(nullable = false, updatable = false)
     private Instant createdAt;
 
-    public static Payment initiate(Account debitAccount, Account creditAccount, PaymentRequest request) {
+    public static Payment initiate(Account debitAccount, Account creditAccount, PaymentOrder request) {
         var payment = new Payment();
-        payment.requestData = mapToRequestData(request);
-        payment.addBalanceChange(debitAccount.debit(payment));
-        payment.addBalanceChange(creditAccount.credit(payment));
+        payment.exchangeRate = request.getExchangeRate();
+        payment.addBalanceChange(debitAccount.debit(request));
+        payment.addBalanceChange(creditAccount.credit(request));
         return payment;
     }
 
@@ -56,25 +53,5 @@ public class Payment {
     private void addBalanceChange(AccountBalanceChange change) {
         balanceChanges.add(change);
         change.setPayment(this);
-    }
-
-    private static RequestData mapToRequestData(PaymentRequest request) {
-        return RequestData.builder()
-                .targetAmount(request.targetAmount())
-                .build();
-    }
-
-    @Embeddable
-    @Builder
-    @NoArgsConstructor(access = AccessLevel.PROTECTED)
-    @AllArgsConstructor(access = AccessLevel.PROTECTED)
-    @Getter
-    @ToString
-    @EqualsAndHashCode
-    public static class RequestData {
-        @AttributeOverride(name = "targetAmount", column = @Column(name = "request_target_amount"))
-        @AttributeOverride(name = "currency", column = @Column(name = "request_target_currency"))
-        @CompositeType(MonetaryAmountType.class)
-        private MonetaryAmount targetAmount;
     }
 }

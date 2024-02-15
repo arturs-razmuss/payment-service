@@ -10,6 +10,7 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import javax.money.CurrencyUnit;
 import javax.money.MonetaryAmount;
 import javax.money.MonetaryException;
 import java.math.BigDecimal;
@@ -33,7 +34,7 @@ public class Account {
 
     private String name;
 
-    @AttributeOverride(name = "targetAmount", column = @Column(name = "balance_amount"))
+    @AttributeOverride(name = "number", column = @Column(name = "balance_amount"))
     @AttributeOverride(name = "currency", column = @Column(name = "balance_currency"))
     @CompositeType(MonetaryAmountType.class)
     private MonetaryAmount balance;
@@ -48,8 +49,8 @@ public class Account {
     @LastModifiedDate
     private Instant updatedAt;
 
-    AccountBalanceChange debit(Payment payment) {
-        var negatedAmount = payment.getRequestData().getTargetAmount().negate();
+    AccountBalanceChange debit(PaymentOrder request) {
+        var negatedAmount = request.getDebitAmount().negate();
         var newBalance = balance.add(negatedAmount);
         if (newBalance.isNegative()) {
             throw new RequestProcessingException(ErrorCodes.BALANCE_NOT_SUFFICIENT);
@@ -58,14 +59,18 @@ public class Account {
         return new AccountBalanceChange(accountId, version, negatedAmount.getNumber().numberValue(BigDecimal.class));
     }
 
-    AccountBalanceChange credit(Payment payment) {
-        var amount = payment.getRequestData().getTargetAmount();
+    AccountBalanceChange credit(PaymentOrder request) {
+        var amount = request.getCreditAmount();
         try {
             balance = balance.add(amount);
         } catch (MonetaryException e) {
             throw new RequestProcessingException(ErrorCodes.BAD_CURRENCY);
         }
         return new AccountBalanceChange(accountId, version, amount.getNumber().numberValue(BigDecimal.class));
+    }
+
+    public CurrencyUnit getCurrency() {
+        return balance.getCurrency();
     }
 
 }

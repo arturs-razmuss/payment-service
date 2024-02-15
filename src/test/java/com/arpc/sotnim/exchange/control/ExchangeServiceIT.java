@@ -3,6 +3,8 @@ package com.arpc.sotnim.exchange.control;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import javax.money.convert.ExchangeRate;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 class ExchangeServiceIT {
@@ -17,7 +19,10 @@ class ExchangeServiceIT {
     @Test
     void getExchangeRate() {
         var exchangeRate = currencyService.getExchangeRate("USD", "EUR");
-        System.out.println(exchangeRate);
-        assertThat(exchangeRate.getFactor()).isNotNull();
+
+        assertThat(exchangeRate)
+                .isPresent()
+                .get().extracting(ExchangeRate::getFactor)
+                .isNotNull();
     }
 }

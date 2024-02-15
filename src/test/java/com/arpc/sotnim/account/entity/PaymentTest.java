@@ -46,7 +46,7 @@ class PaymentTest {
         Payment.initiate(
                 sourceAccount,
                 targetAccount,
-                new PaymentRequest(Money.of(transferAmount, "USD"))
+                new SingleCurrencyOrder(Money.of(transferAmount, "USD"))
         );
 
         assertThat(sourceAccount.getBalance()).isEqualTo(Money.of(endSourceBalance, "USD"));
@@ -58,7 +58,7 @@ class PaymentTest {
         var payment = Payment.initiate(
                 sourceAccount,
                 targetAccount,
-                new PaymentRequest(Money.of(5, "USD"))
+                new SingleCurrencyOrder(Money.of(5, "USD"))
         );
 
         assertThat(payment.getBalanceChanges()).hasSize(2);
@@ -73,7 +73,7 @@ class PaymentTest {
         assertThatThrownBy(() -> Payment.initiate(
                 sourceAccount,
                 targetAccount,
-                new PaymentRequest(Money.of(11, "USD")))
+                new SingleCurrencyOrder(Money.of(11, "USD")))
         )
                 .isExactlyInstanceOf(RequestProcessingException.class)
                 .extracting(it -> ((RequestProcessingException) it).getErrorCode())
@@ -90,7 +90,7 @@ class PaymentTest {
         assertThatThrownBy(() -> Payment.initiate(
                 sourceAccount,
                 targetAccount,
-                new PaymentRequest(Money.of(5, "USD")))
+                new SingleCurrencyOrder(Money.of(5, "USD")))
         )
                 .isExactlyInstanceOf(RequestProcessingException.class)
                 .extracting(it -> ((RequestProcessingException) it).getErrorCode())
