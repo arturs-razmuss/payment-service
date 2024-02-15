@@ -14,26 +14,24 @@ import java.math.BigDecimal;
 @EqualsAndHashCode
 public class AccountBalanceChange {
 
-    public static AccountBalanceChange ofDebit(Account account, BigDecimal amount) {
-        return new AccountBalanceChange(null, account, account.getVersion(), null, amount.negate());
-    }
-
-    public static AccountBalanceChange ofCredit(Account account, BigDecimal amount) {
-        return new AccountBalanceChange(null, account, account.getVersion(), null, amount);
+    public AccountBalanceChange(Long accountId, int accountVersion, Payment payment, BigDecimal amount) {
+        this.accountId = accountId;
+        this.accountVersion = accountVersion;
+        this.payment = payment;
+        this.amount = amount;
     }
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long accountBalanceChangeId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    private Account account;
+    private Long accountId;
 
     private int accountVersion;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @Setter
-    private Transfer transfer;
+    private Payment payment;
 
     private BigDecimal amount;
 

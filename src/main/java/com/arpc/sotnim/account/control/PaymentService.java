@@ -1,11 +1,12 @@
 package com.arpc.sotnim.account.control;
 
 import com.arpc.sotnim.account.entity.AccountRepository;
-import com.arpc.sotnim.account.entity.Transfer;
-import com.arpc.sotnim.account.entity.TransferRepository;
-import com.arpc.sotnim.account.entity.TransferRequest;
+import com.arpc.sotnim.account.entity.Payment;
+import com.arpc.sotnim.account.entity.PaymentRepository;
+import com.arpc.sotnim.account.entity.PaymentRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import static com.arpc.sotnim.core.boundary.ErrorCodes.ACCOUNT_NOT_FOUND;
 import static com.arpc.sotnim.core.boundary.RequestProcessingException.withCode;
@@ -16,13 +17,16 @@ import static com.arpc.sotnim.core.boundary.RequestProcessingException.withCode;
 public class PaymentService {
 
     private final AccountRepository accountRepository;
-    private final TransferRepository transferRepository;
+    private final PaymentRepository paymentRepository;
 
-    public void transfer(TransferRequest request) {
-        var debitAccount = accountRepository.findById(request.sourceAccountId()).orElseThrow(withCode(ACCOUNT_NOT_FOUND));
-        var creditAccount = accountRepository.findById(request.targetAccountId()).orElseThrow(withCode(ACCOUNT_NOT_FOUND));
+    @Transactional
+    public void transfer(PaymentRequest request) {
+        var debitAccount = accountRepository.findById(request.sourceAccountId())
+                .orElseThrow(withCode(ACCOUNT_NOT_FOUND));
+        var creditAccount = accountRepository.findById(request.targetAccountId())
+                .orElseThrow(withCode(ACCOUNT_NOT_FOUND));
 
-        var transfer = Transfer.initiate(debitAccount, creditAccount, request);
-        transferRepository.save(transfer);
+        var transfer = new Payment(debitAccount, creditAccount, request);
+        paymentRepository.save(transfer);
     }
 }

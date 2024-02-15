@@ -1,5 +1,7 @@
 package com.arpc.sotnim.account.entity;
 
+import com.arpc.sotnim.core.boundary.ErrorCodes;
+import com.arpc.sotnim.core.boundary.RequestProcessingException;
 import io.hypersistence.utils.hibernate.type.money.MonetaryAmountType;
 import jakarta.persistence.*;
 import lombok.*;
@@ -9,6 +11,7 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.money.MonetaryAmount;
+import java.math.BigDecimal;
 import java.time.Instant;
 
 @Entity
@@ -43,4 +46,20 @@ public class Account {
 
     @LastModifiedDate
     private Instant updatedAt;
+
+    AccountBalanceChange debit(Payment payment) {
+        var negatedAmount = payment.getRequestData().getTargetAmount().negate();
+        var newBalance = balance.add(negatedAmount);
+        if (newBalance.isNegative()) {
+            throw new RequestProcessingException(ErrorCodes.BALANCE_NOT_SUFFICIENT);
+        }
+        return new AccountBalanceChange(accountId, version, payment, negatedAmount.getNumber().numberValue(BigDecimal.class));
+    }
+
+    AccountBalanceChange credit(Payment payment) {
+        var amount = payment.getRequestData().getTargetAmount();
+        balance = balance.add(amount);
+        return new AccountBalanceChange(accountId, version, payment, amount.getNumber().numberValue(BigDecimal.class));
+    }
+
 }

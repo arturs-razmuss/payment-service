@@ -5,24 +5,24 @@ import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import javax.money.MonetaryAmount;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
 
 @Entity
-@Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @ToString
 @EqualsAndHashCode
 @EntityListeners(AuditingEntityListener.class)
-public class Transfer {
+public class Payment {
 
     @Id
     @GeneratedValue
-    private Long transaction_id;
+    private Long transactionId;
 
     @Embedded
     private RequestData requestData;
@@ -38,40 +38,23 @@ public class Transfer {
     @Column(nullable = false, updatable = false)
     private Instant createdAt;
 
-    public void addBalanceChange(AccountBalanceChange change) {
+    private void addBalanceChange(AccountBalanceChange change) {
         balanceChanges.add(change);
-        change.setTransfer(this);
+        change.setPayment(this);
     }
 
-    public static Transfer initiate(Account debitAccount, Account creditAccount, TransferRequest request) {
-        var transfer = Transfer.builder()
-                .requestData(mapToRequestData(request))
-                .build();
-
-        var debitChange = AccountBalanceChange.builder()
-                .account(debitAccount)
-                .transfer(transfer)
-                .amount(request.instructedAmount().amount())
-                .build();
-
-        var creditChange = AccountBalanceChange.builder()
-                .account(creditAccount)
-                .transfer(transfer)
-                .amount(request.instructedAmount().amount())
-                .build();
-
-        transfer.addBalanceChange(debitChange);
-        transfer.addBalanceChange(creditChange);
-
-        return transfer;
+    public Payment(Account debitAccount, Account creditAccount, PaymentRequest request) {
+        requestData = mapToRequestData(request);
+        this.addBalanceChange(debitAccount.debit(this));
+        this.addBalanceChange(creditAccount.credit(this));
+        //TODO: Ensure balance change sum is 0
     }
 
-    private static RequestData mapToRequestData(TransferRequest request) {
+    private static RequestData mapToRequestData(PaymentRequest request) {
         return RequestData.builder()
                 .sourceAccountId(request.sourceAccountId())
                 .targetAccountId(request.targetAccountId())
-                .instructedAmount(request.instructedAmount().amount().toPlainString())
-                .instructedCurrency(request.instructedAmount().currency())
+                .targetAmount(request.amount())
                 .build();
     }
 
@@ -79,12 +62,12 @@ public class Transfer {
     @Builder
     @NoArgsConstructor(access = AccessLevel.PROTECTED)
     @AllArgsConstructor(access = AccessLevel.PROTECTED)
+    @Getter
+    @ToString
+    @EqualsAndHashCode
     public static class RequestData {
         private Long sourceAccountId;
         private Long targetAccountId;
-        private String instructedAmount;
-        private String instructedCurrency;
-
-
+        private MonetaryAmount targetAmount;
     }
 }
