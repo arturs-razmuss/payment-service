@@ -5,6 +5,7 @@ import com.arpc.sotnim.account.entity.Account;
 import com.arpc.sotnim.account.entity.AccountRepository;
 import lombok.RequiredArgsConstructor;
 import org.javamoney.moneta.Money;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,7 +16,8 @@ import java.util.List;
 @RequiredArgsConstructor
 public class AccountService {
 
-    private static final BigDecimal NEW_ACCOUNT_INITIAL_BALANCE = BigDecimal.ZERO;
+    @Value("${sotnim.account.initial-balance:0}")
+    private final BigDecimal newAccountInitialBalance;
 
     private final AccountRepository accountRepository;
 
@@ -24,7 +26,7 @@ public class AccountService {
         var account = Account.builder()
             .clientId(clientId)
             .name(request.name())
-            .balance(Money.of(NEW_ACCOUNT_INITIAL_BALANCE, request.currency()))
+            .balance(Money.of(newAccountInitialBalance, request.currency()))
             .build();
 
         return accountRepository.save(account);
