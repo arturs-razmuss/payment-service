@@ -1,7 +1,9 @@
 package com.arpc.sotnim.account.entity;
 
+import io.hypersistence.utils.hibernate.type.money.MonetaryAmountType;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.CompositeType;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Immutable;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -29,7 +31,7 @@ public class Payment {
     private RequestData requestData;
 
     @OneToMany(
-            mappedBy = "transfer",
+            mappedBy = "payment",
             cascade = CascadeType.ALL,
             orphanRemoval = true
     )
@@ -70,6 +72,9 @@ public class Payment {
     @ToString
     @EqualsAndHashCode
     public static class RequestData {
+        @AttributeOverride(name = "targetAmount", column = @Column(name = "request_target_amount"))
+        @AttributeOverride(name = "currency", column = @Column(name = "request_target_currency"))
+        @CompositeType(MonetaryAmountType.class)
         private MonetaryAmount targetAmount;
     }
 }
