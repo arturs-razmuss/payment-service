@@ -35,4 +35,6 @@ public class AccountService {
     public List<Account> getAccounts(Long clientId) {
         return accountRepository.findByClientId(clientId);
     }
+
+
 }

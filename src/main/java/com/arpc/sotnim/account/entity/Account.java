@@ -34,6 +34,9 @@ public class Account {
     @CompositeType(MonetaryAmountType.class)
     private MonetaryAmount balance;
 
+    @Version
+    private int version = 0;
+
     @CreatedDate
     @Column(nullable = false, updatable = false)
     private Instant createdAt;

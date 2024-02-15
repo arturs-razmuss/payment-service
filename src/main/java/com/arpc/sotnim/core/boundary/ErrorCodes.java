@@ -7,7 +7,8 @@ import lombok.ToString;
 @ToString
 public enum ErrorCodes {
     BAD_CURRENCY("00001", "Currency is not supported"),
-    BALANCE_NOT_SUFFICIENT("00002", "Balance is not sufficient");
+    BALANCE_NOT_SUFFICIENT("00002", "Balance is not sufficient"),
+    ACCOUNT_NOT_FOUND("00003", "Account not found");
 
     private final String code;
     private final String message;
