@@ -30,7 +30,7 @@ public class AccountFlowTest extends ComponentTest {
         assertThat(accountList).hasSize(1);
         var accountWithBalance = accountList.stream().findFirst().orElseThrow();
         assertThat(accountWithBalance.accountId()).isEqualTo(addedAccount.accountId());
-        assertThat(accountWithBalance.balance().amount()).isEqualTo("0");
+        assertThat(accountWithBalance.balance().amount()).isEqualTo("10000");
     }
 
 }
