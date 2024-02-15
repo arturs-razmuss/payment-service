@@ -12,7 +12,9 @@ import javax.money.convert.MonetaryConversions;
 public class CurrencyService {
 
     public ExchangeRate getExchangeRate(CurrencyUnit sourceCurrency, CurrencyUnit targetCurrency) {
-        ExchangeRateProvider provider = MonetaryConversions.getExchangeRateProvider();
+        //moneta provides multiple remote data sources and local caching on file system satisfying resiliency requirements
+        //alternative would be to implement our own providers with retries,circuit breaking logic with fallback to cache
+        ExchangeRateProvider provider = MonetaryConversions.getExchangeRateProvider("ECB", "IMF");
 
         return provider.getExchangeRate(sourceCurrency, targetCurrency);
     }
