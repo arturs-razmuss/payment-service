@@ -3,6 +3,7 @@ package com.arpc.sotnim.account.control;
 import com.arpc.sotnim.account.boundary.dto.CreateAccountRequest;
 import com.arpc.sotnim.account.entity.Account;
 import com.arpc.sotnim.account.entity.AccountRepository;
+import com.arpc.sotnim.account.entity.view.AccountBalanceChangeView;
 import lombok.RequiredArgsConstructor;
 import org.javamoney.moneta.Money;
 import org.springframework.beans.factory.annotation.Value;
@@ -36,5 +37,7 @@ public class AccountService {
         return accountRepository.findByClientId(clientId);
     }
 
-
+    public List<AccountBalanceChangeView> getAccountTransactions(Long clientId, Long accountId, Integer offset, Integer limit) {
+        return accountRepository.findTransactions(clientId, accountId, offset, limit);
+    }
 }

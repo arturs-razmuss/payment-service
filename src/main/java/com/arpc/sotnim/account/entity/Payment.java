@@ -25,6 +25,8 @@ public class Payment {
     @GeneratedValue
     private Long paymentId;
 
+    private Long clientId;
+
     private BigDecimal exchangeRate;
 
     @OneToMany(

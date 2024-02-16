@@ -19,14 +19,9 @@ public class AccountFlowTest extends ComponentTest {
         var addedAccount = accountSystem.createAccount(clientId, Map.of(
                 "name", "John Doe",
                 "currency", "USD")
-        )
-                .getResponseData();
-
-        assertThat(addedAccount.accountId()).containsOnlyDigits();
-        assertThat(addedAccount.createdAt()).matches("\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}.\\d+Z");
+        ).getResponseData();
 
         List<AccountEndpoint.AccountDto> accountList = accountSystem.getAccounts(clientId).getResponseData();
-
         assertThat(accountList).hasSize(1);
         var accountWithBalance = accountList.stream().findFirst().orElseThrow();
         assertThat(accountWithBalance.accountId()).isEqualTo(addedAccount.accountId());

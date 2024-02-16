@@ -33,6 +33,14 @@ public class AccountEndpoint {
                 new ParameterizedTypeReference<>() {}));
     }
 
+    public InvocationResult<List<AccountTransactionDto>> getAccountTransactions(String clientId, String accountId) {
+        return wrap(() -> restTemplate.exchange(
+                RequestEntity
+                        .get("/api/v1/clients/{clientId}/accounts/{accountId}/transactions", clientId, accountId)
+                        .build(),
+                new ParameterizedTypeReference<>() {}));
+    }
+
     public record AccountCreated(String accountId, String createdAt) {
     }
 
@@ -46,6 +54,13 @@ public class AccountEndpoint {
     public record MoneyAmountDto(
             String amount,
             String currency
+    ) {
+    }
+
+    public record AccountTransactionDto(
+            String amount,
+            String paymentId,
+            String createdAt
     ) {
     }
 

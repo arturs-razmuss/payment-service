@@ -12,7 +12,6 @@ import java.math.BigDecimal;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Getter
 @ToString
-@EqualsAndHashCode
 @Immutable
 public class AccountBalanceChange {
 
@@ -30,8 +29,10 @@ public class AccountBalanceChange {
 
     private int accountVersion;
 
+
     @ManyToOne(fetch = FetchType.LAZY)
     @Setter(AccessLevel.PACKAGE)
+    @JoinColumn(name = "payment_id")
     @ToString.Exclude
     private Payment payment;
 

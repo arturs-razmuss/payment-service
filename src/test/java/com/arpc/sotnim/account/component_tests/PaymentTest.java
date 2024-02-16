@@ -36,21 +36,37 @@ public class PaymentTest extends ComponentTest {
 
     @Test
     void shouldSuccessfullyCreatePaymentWhenSufficientFundsExist() {
-        paymentSystem.transfer(Map.of(
-                "sourceAccountId", debitAccountId,
-                "targetAccountId", creditAccountId,
-                "instructedAmount", Map.of(
-                        "amount", "1000",
-                        "currency", "EUR")
-        ));
+        executePayment(debitAccountId, creditAccountId, "1000", "EUR");
 
-        List<AccountEndpoint.AccountDto> accountBalanceList = accountSystem.getAccounts(clientId).getResponseData();
+        List<AccountEndpoint.AccountDto> accountDetailList = accountSystem.getAccounts(clientId).getResponseData();
 
-        assertThat(accountBalanceList)
+        assertThat(accountDetailList)
                 .extracting(AccountEndpoint.AccountDto::balance)
                 .extracting(AccountEndpoint.MoneyAmountDto::amount)
                 .containsExactlyInAnyOrder("9500", "11000");
     }
 
+    @Test
+    void shouldRecordTransactionWhenPaymentIsFinished() {
+        executePayment(debitAccountId, creditAccountId,"50", "EUR");
+        executePayment(creditAccountId, debitAccountId,"70", "USD");
+
+        var accountDetailList = accountSystem.getAccountTransactions(clientId, debitAccountId).getResponseData();
+
+        assertThat(accountDetailList).hasSize(2);
+        assertThat(accountDetailList)
+                .extracting(AccountEndpoint.AccountTransactionDto::amount)
+                .containsExactly("70.00", "-25.00");
+    }
+
+    private void executePayment(String debitAccountId, String creditAccountId, String amount, String currency) {
+        paymentSystem.transfer(Map.of(
+                "sourceAccountId", debitAccountId,
+                "targetAccountId", creditAccountId,
+                "instructedAmount", Map.of(
+                        "amount", amount,
+                        "currency", currency)
+        ));
+    }
 
 }
