@@ -9,6 +9,7 @@ public enum ErrorCodes {
     BAD_CURRENCY("00001", "Currency is not supported"),
     BALANCE_NOT_SUFFICIENT("00002", "Balance is not sufficient"),
     ACCOUNT_NOT_FOUND("00003", "Account not found"),
+    INVALID_AMOUNT("00004", "Invalid amount"),
     SERVER_ERROR("10000", "Unexpected server error");
 
     private final String code;

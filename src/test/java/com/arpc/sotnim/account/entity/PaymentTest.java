@@ -13,6 +13,7 @@ import java.util.Optional;
 
 import static com.arpc.sotnim.core.boundary.ErrorCodes.BAD_CURRENCY;
 import static com.arpc.sotnim.core.boundary.ErrorCodes.BALANCE_NOT_SUFFICIENT;
+import static com.arpc.sotnim.currency.ExchangeRateHelper.getExchangeRate;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -20,6 +21,7 @@ class PaymentTest {
 
     Account sourceAccount;
     Account targetAccount;
+
     @BeforeEach
     void setUp() {
         sourceAccount = Account.builder()
@@ -95,6 +97,23 @@ class PaymentTest {
                 .isExactlyInstanceOf(RequestProcessingException.class)
                 .extracting(it -> ((RequestProcessingException) it).getErrorCode())
                 .isEqualTo(BAD_CURRENCY);
+    }
+
+    @Test
+    void shouldUpdateTargetAccountBalanceWhenCurrenciesDiffer() {
+        var targetAccount = Account.builder()
+                .accountId(2L)
+                .balance(Money.of(0, "EUR"))
+                .build();
+
+        Payment.initiate(
+                sourceAccount,
+                targetAccount,
+                new MultiCurrencyOrder(Money.of(50.29, "EUR"), getExchangeRate("USD", "EUR", BigDecimal.valueOf(10)))
+        );
+
+        assertThat(sourceAccount.getBalance()).isEqualTo(Money.of(4.97, "USD"));
+        assertThat(targetAccount.getBalance()).isEqualTo(Money.of(50.29, "EUR"));
     }
 
     @NotNull
