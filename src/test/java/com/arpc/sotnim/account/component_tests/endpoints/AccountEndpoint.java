@@ -1,17 +1,17 @@
 package com.arpc.sotnim.account.component_tests.endpoints;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.boot.test.context.TestComponent;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.RequestEntity;
-import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Map;
 
 import static com.arpc.sotnim.account.component_tests.endpoints.InvocationResult.wrap;
 
-@Component
+@TestComponent
 @RequiredArgsConstructor
 public class AccountEndpoint {
 

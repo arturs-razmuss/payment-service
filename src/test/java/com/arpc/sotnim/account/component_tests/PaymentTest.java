@@ -2,6 +2,7 @@ package com.arpc.sotnim.account.component_tests;
 
 import com.arpc.sotnim.ComponentTest;
 import com.arpc.sotnim.account.component_tests.endpoints.AccountEndpoint;
+import com.arpc.sotnim.account.component_tests.endpoints.InvocationResult;
 import com.arpc.sotnim.account.component_tests.endpoints.PaymentEndpoint;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -11,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.http.HttpStatus.BAD_REQUEST;
 
 public class PaymentTest extends ComponentTest {
 
@@ -41,6 +43,7 @@ public class PaymentTest extends ComponentTest {
         List<AccountEndpoint.AccountDto> accountDetailList = accountSystem.getAccounts(clientId).getResponseData();
 
         assertThat(accountDetailList)
+                .filteredOn(accountDto -> List.of(debitAccountId, creditAccountId).contains(accountDto.accountId()))
                 .extracting(AccountEndpoint.AccountDto::balance)
                 .extracting(AccountEndpoint.MoneyAmountDto::amount)
                 .containsExactlyInAnyOrder("9500", "11000");
@@ -59,8 +62,18 @@ public class PaymentTest extends ComponentTest {
                 .containsExactly("70.00", "-25.00");
     }
 
-    private void executePayment(String debitAccountId, String creditAccountId, String amount, String currency) {
-        paymentSystem.transfer(Map.of(
+    @Test
+    void shouldFailToCreatePaymentWhenCurrencyDontMatchTargetAccount() {
+        var invocationResult = executePayment(debitAccountId, creditAccountId,"50", "JPY");
+
+        assertThat(invocationResult.success()).isFalse();
+        assertThat(invocationResult.httpStatusCode()).isEqualTo(BAD_REQUEST);
+        assertThat(invocationResult.code()).isEqualTo("00001");
+        assertThat(invocationResult.message()).isEqualTo("Currency is not supported");
+    }
+
+    private InvocationResult<Map<String, Object>> executePayment(String debitAccountId, String creditAccountId, String amount, String currency) {
+        return paymentSystem.transfer(Map.of(
                 "sourceAccountId", debitAccountId,
                 "targetAccountId", creditAccountId,
                 "instructedAmount", Map.of(

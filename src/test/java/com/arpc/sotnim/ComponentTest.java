@@ -1,6 +1,7 @@
 package com.arpc.sotnim;
 
 import com.arpc.sotnim.account.component_tests.endpoints.AccountEndpoint;
+import com.arpc.sotnim.account.component_tests.endpoints.PaymentEndpoint;
 import com.arpc.sotnim.exchange.control.ExchangeRateServiceTestDouble;
 import com.arpc.sotnim.exchange.control.ExchangeService;
 import lombok.NoArgsConstructor;
@@ -15,7 +16,7 @@ import static com.arpc.sotnim.TestPaymentApplication.POSTGRES_DOCKER_IMAGE;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Testcontainers
-@Import(ExchangeRateServiceTestDouble.class)
+@Import({ExchangeRateServiceTestDouble.class, AccountEndpoint.class, PaymentEndpoint.class})
 @NoArgsConstructor
 public abstract class ComponentTest {
 

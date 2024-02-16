@@ -1,19 +1,30 @@
 package com.arpc.sotnim.account.component_tests.endpoints;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.boot.test.context.TestComponent;
 import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.stereotype.Component;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.RequestEntity;
 
 import java.util.Map;
 
-@Component
-@RequiredArgsConstructor
+import static com.arpc.sotnim.account.component_tests.endpoints.InvocationResult.wrap;
 
+@TestComponent
+@RequiredArgsConstructor
 public class PaymentEndpoint {
 
     private final TestRestTemplate restTemplate;
 
-    public void transfer(Map<String, Object> transferRequest) {
-        restTemplate.postForEntity("/api/v1/payments", transferRequest, Void.class);
+    public InvocationResult<Map<String, Object>> transfer(Map<String, Object> transferRequest) {
+        return wrap(() -> restTemplate.exchange(
+                RequestEntity
+                        .post("/api/v1/payments")
+                        .body(transferRequest),
+                new ParameterizedTypeReference<>() {})
+        );
+
     }
+
+
 }
