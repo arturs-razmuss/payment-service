@@ -11,7 +11,7 @@ This is a simple payment service that allows users to make payments and view the
 ## Build and Run
 To compile the project, run the following command:
 ```sh
-mvn clean install
+./mvnw clean install
 ```
 
 To run the project, run the following command:
