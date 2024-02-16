@@ -1,10 +1,13 @@
 package com.arpc.sotnim;
 
 import com.arpc.sotnim.account.component_tests.endpoints.AccountEndpoint;
+import com.arpc.sotnim.exchange.control.ExchangeRateServiceTestDouble;
+import com.arpc.sotnim.exchange.control.ExchangeService;
+import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
-import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
@@ -12,7 +15,8 @@ import static com.arpc.sotnim.TestPaymentApplication.POSTGRES_DOCKER_IMAGE;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Testcontainers
-@Configuration
+@Import(ExchangeRateServiceTestDouble.class)
+@NoArgsConstructor
 public abstract class ComponentTest {
 
     @ServiceConnection
@@ -22,8 +26,16 @@ public abstract class ComponentTest {
         postgreSQLContainer.start();
     }
 
+    public ComponentTest(ExchangeService exchangeServiceTestDouble) {
+        this.exchangeServiceTestDouble = (ExchangeRateServiceTestDouble) exchangeServiceTestDouble;
+    }
+
     @Autowired
     protected AccountEndpoint accountSystem;
+
+    @Autowired
+    protected ExchangeRateServiceTestDouble exchangeServiceTestDouble;
+
 
 }
 

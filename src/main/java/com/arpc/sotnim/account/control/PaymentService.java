@@ -1,7 +1,7 @@
 package com.arpc.sotnim.account.control;
 
 import com.arpc.sotnim.account.boundary.dto.MoneyAmountDto;
-import com.arpc.sotnim.account.boundary.dto.TransferRequest;
+import com.arpc.sotnim.account.boundary.dto.PaymentRequest;
 import com.arpc.sotnim.account.entity.*;
 import com.arpc.sotnim.core.boundary.ErrorCodes;
 import com.arpc.sotnim.core.boundary.RequestProcessingException;
@@ -29,7 +29,7 @@ public class PaymentService {
     private final ExchangeService exchangeService;
 
     @Transactional
-    public void transfer(TransferRequest request) {
+    public Payment transfer(PaymentRequest request) {
         Account debitAccount = accountRepository.findById(request.sourceAccountId())
                 .orElseThrow(withCode(ACCOUNT_NOT_FOUND));
         Account creditAccount = accountRepository.findById(request.targetAccountId())
@@ -38,13 +38,13 @@ public class PaymentService {
         PaymentOrder paymentOrder = createPaymentOrder(debitAccount, creditAccount, request.instructedAmount());
 
         var payment = Payment.initiate(debitAccount, creditAccount, paymentOrder);
-        paymentRepository.save(payment);
+        return paymentRepository.save(payment);
     }
 
     private PaymentOrder createPaymentOrder(Account debitAccount, Account creditAccount, MoneyAmountDto instructedAmount) {
         MonetaryAmount creditAmount = toMonetaryAmount(instructedAmount);
 
-        if (creditAccount.getCurrency().equals(creditAmount.getCurrency())) {
+        if (!creditAccount.getCurrency().equals(creditAmount.getCurrency())) {
             throw new RequestProcessingException(ErrorCodes.BAD_CURRENCY);
         }
 

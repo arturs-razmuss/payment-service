@@ -23,7 +23,7 @@ public class Payment {
 
     @Id
     @GeneratedValue
-    private Long transactionId;
+    private Long paymentId;
 
     private BigDecimal exchangeRate;
 
