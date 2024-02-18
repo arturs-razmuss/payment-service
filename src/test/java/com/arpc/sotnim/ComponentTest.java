@@ -14,6 +14,10 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 
 import static com.arpc.sotnim.TestPaymentApplication.POSTGRES_DOCKER_IMAGE;
 
+/**
+ * Component test as defined by https://martinfowler.com/articles/microservice-testing/#testing-component-in-process-diagram
+ * Use for all tests if possible to take advantage of Spring context reuse
+ */
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Testcontainers
 @Import({ExchangeRateServiceTestDouble.class, AccountEndpoint.class, PaymentEndpoint.class})
@@ -21,7 +25,7 @@ import static com.arpc.sotnim.TestPaymentApplication.POSTGRES_DOCKER_IMAGE;
 public abstract class ComponentTest {
 
     @ServiceConnection
-    static final PostgreSQLContainer<?> postgreSQLContainer = new PostgreSQLContainer<>(POSTGRES_DOCKER_IMAGE).withReuse(true);
+    static final PostgreSQLContainer<?> postgreSQLContainer = new PostgreSQLContainer<>(POSTGRES_DOCKER_IMAGE);
 
     static {
         postgreSQLContainer.start();

@@ -34,7 +34,7 @@ public class Account {
 
     private String name;
 
-    @AttributeOverride(name = "number", column = @Column(name = "balance_amount"))
+    @AttributeOverride(name = "amount", column = @Column(name = "balance_amount"))
     @AttributeOverride(name = "currency", column = @Column(name = "balance_currency"))
     @CompositeType(MonetaryAmountType.class)
     private MonetaryAmount balance;
