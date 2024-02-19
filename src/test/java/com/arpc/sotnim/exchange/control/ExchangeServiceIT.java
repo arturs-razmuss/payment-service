@@ -4,25 +4,36 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import javax.money.convert.ExchangeRate;
+import javax.money.convert.MonetaryConversions;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 class ExchangeServiceIT {
 
-    ExchangeService currencyService;
+    ExchangeService exchangeService;
 
     @BeforeEach
     void setUp() {
-        currencyService = new ExchangeService();
+        exchangeService = new ExchangeService(MonetaryConversions.getExchangeRateProvider("ECB", "IMF"));
     }
 
     @Test
-    void getExchangeRate() {
-        var exchangeRate = currencyService.getExchangeRate("USD", "EUR");
+    void shouldRetrieveExchangeRateExternallyWhenMultipleProvidersAreAvailable() {
+        var exchangeRate = exchangeService.getExchangeRate("USD", "EUR");
 
         assertThat(exchangeRate)
                 .isPresent()
                 .get().extracting(ExchangeRate::getFactor)
                 .isNotNull();
+    }
+
+    @Test
+    public void shouldReturnEmptyOptionalWhenSourceCurrencyCodeIsInvalid() {
+        // Act
+        Optional<ExchangeRate> result = exchangeService.getExchangeRate("INVALID", "2");
+
+        // Assert
+        assertThat(result).isEmpty();
     }
 }

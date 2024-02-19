@@ -25,7 +25,7 @@ class MultiCurrencyOrderTest {
                 100.04, 12.35,  0.12345
                 """)
     void shouldRoundToCentsWhenExchangeRateIsNotOne(String debitAmount, String creditAmount, String rate) {
-        var exchangeRate = getExchangeRate("USD", "EUR", new BigDecimal(rate));
+        var exchangeRate = getExchangeRate("USD", "EUR", rate);
 
         var multiCurrencyOrder = new MultiCurrencyOrder(Money.of(new BigDecimal(creditAmount), "EUR"), exchangeRate);
 
@@ -38,7 +38,7 @@ class MultiCurrencyOrderTest {
     public void shouldThrowExceptionWithInvalidAmountWhenAmountIsNegativeOrZero(String amount) {
         // Arrange
         MonetaryAmount creditAmount = Money.of(new BigDecimal(amount), "EUR");
-        var exchangeRate = getExchangeRate("USD", "EUR", BigDecimal.ONE);
+        var exchangeRate = getExchangeRate("USD", "EUR", "1");
 
         // Act & Assert
         assertThatThrownBy(() -> new MultiCurrencyOrder(creditAmount, exchangeRate))

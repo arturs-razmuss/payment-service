@@ -109,7 +109,7 @@ class PaymentTest {
         Payment.initiate(
                 sourceAccount,
                 targetAccount,
-                new MultiCurrencyOrder(Money.of(50.29, "EUR"), getExchangeRate("USD", "EUR", BigDecimal.valueOf(10)))
+                new MultiCurrencyOrder(Money.of(50.29, "EUR"), getExchangeRate("USD", "EUR", "10"))
         );
 
         assertThat(sourceAccount.getBalance()).isEqualTo(Money.of(4.97, "USD"));

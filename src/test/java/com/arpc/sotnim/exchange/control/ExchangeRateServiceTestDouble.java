@@ -4,22 +4,27 @@ import com.arpc.sotnim.currency.ExchangeRateHelper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
+import org.springframework.lang.NonNull;
 
 import javax.money.CurrencyUnit;
 import javax.money.convert.ExchangeRate;
-import java.math.BigDecimal;
 import java.util.Optional;
 
 
 @Configuration
 public class ExchangeRateServiceTestDouble extends ExchangeService {
 
-    private BigDecimal rate = new BigDecimal("2");
+    private String rate = "2";
+
+    public ExchangeRateServiceTestDouble() {
+        super(null);
+    }
+
     public void setRate(String rate) {
-        this.rate = new BigDecimal(rate);
+        this.rate = rate;
     }
     @Override
-    public Optional<ExchangeRate> getExchangeRate(CurrencyUnit sourceCurrency, CurrencyUnit targetCurrency) {
+    public Optional<ExchangeRate> getExchangeRate(@NonNull CurrencyUnit sourceCurrency, @NonNull CurrencyUnit targetCurrency) {
         return Optional.of(ExchangeRateHelper.getExchangeRate(sourceCurrency.getCurrencyCode(), sourceCurrency.getCurrencyCode(), rate));
     }
 
