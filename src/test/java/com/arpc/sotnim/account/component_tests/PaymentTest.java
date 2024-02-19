@@ -63,6 +63,24 @@ public class PaymentTest extends ComponentTest {
     }
 
     @Test
+    void shouldAllowSingleCurrencyTransferWhenTheCurrencyMatchesInSourceAndTarget() {
+        var extraClientId = "99";
+        var euAccount = accountSystem.createAccount(extraClientId, Map.of(
+                "name", "Eu Doe",
+                "currency", "EUR")
+        ).getResponseData().accountId();
+        executePayment(euAccount, creditAccountId,"50", "EUR");
+
+
+        var euAccountDetails = accountSystem.getAccounts(extraClientId).getResponseData();
+
+        assertThat(euAccountDetails)
+                .extracting(AccountEndpoint.AccountDto::balance)
+                .extracting(AccountEndpoint.MoneyAmountDto::amount)
+                .containsExactly("9950");
+    }
+
+    @Test
     void shouldFailToCreatePaymentWhenCurrencyDontMatchTargetAccount() {
         var invocationResult = executePayment(debitAccountId, creditAccountId,"50", "JPY");
 
