@@ -15,7 +15,7 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 import static com.arpc.sotnim.TestPaymentApplication.POSTGRES_DOCKER_IMAGE;
 
 /**
- * Component test as defined by https://martinfowler.com/articles/microservice-testing/#testing-component-in-process-diagram
+ * Component test as defined by <a href="https://martinfowler.com/articles/microservice-testing/#testing-component-in-process-diagram">Microservice testing article</a>
  * Use for all tests if possible to take advantage of Spring context reuse
  */
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)

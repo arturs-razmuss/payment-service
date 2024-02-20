@@ -5,7 +5,7 @@ import com.arpc.sotnim.account.boundary.dto.CreateAccountRequest;
 import com.arpc.sotnim.account.boundary.dto.CreateAccountResponse;
 import com.arpc.sotnim.account.control.AccountService;
 import com.arpc.sotnim.account.entity.view.AccountBalanceChangeView;
-import com.arpc.sotnim.core.boundary.dto.RestResponse;
+import com.arpc.sotnim.core.dto.RestResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;

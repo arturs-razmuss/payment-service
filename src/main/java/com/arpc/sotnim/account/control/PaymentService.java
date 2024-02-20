@@ -3,8 +3,8 @@ package com.arpc.sotnim.account.control;
 import com.arpc.sotnim.account.boundary.dto.MoneyAmountDto;
 import com.arpc.sotnim.account.boundary.dto.PaymentRequest;
 import com.arpc.sotnim.account.entity.*;
-import com.arpc.sotnim.core.boundary.ErrorCodes;
-import com.arpc.sotnim.core.boundary.RequestProcessingException;
+import com.arpc.sotnim.core.ErrorCodes;
+import com.arpc.sotnim.core.RequestProcessingException;
 import com.arpc.sotnim.exchange.control.ExchangeService;
 import lombok.RequiredArgsConstructor;
 import org.javamoney.moneta.Money;
@@ -15,9 +15,9 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.money.MonetaryAmount;
 import javax.money.convert.ExchangeRate;
 
-import static com.arpc.sotnim.core.boundary.ErrorCodes.ACCOUNT_NOT_FOUND;
-import static com.arpc.sotnim.core.boundary.ErrorCodes.SERVER_ERROR;
-import static com.arpc.sotnim.core.boundary.RequestProcessingException.withCode;
+import static com.arpc.sotnim.core.ErrorCodes.ACCOUNT_NOT_FOUND;
+import static com.arpc.sotnim.core.ErrorCodes.SERVER_ERROR;
+import static com.arpc.sotnim.core.RequestProcessingException.withCode;
 
 
 @Service

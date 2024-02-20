@@ -1,6 +1,6 @@
 package com.arpc.sotnim.account.entity;
 
-import com.arpc.sotnim.core.boundary.RequestProcessingException;
+import com.arpc.sotnim.core.RequestProcessingException;
 import org.javamoney.moneta.Money;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.BeforeEach;
@@ -11,8 +11,8 @@ import org.junit.jupiter.params.provider.CsvSource;
 import java.math.BigDecimal;
 import java.util.Optional;
 
-import static com.arpc.sotnim.core.boundary.ErrorCodes.BAD_CURRENCY;
-import static com.arpc.sotnim.core.boundary.ErrorCodes.BALANCE_NOT_SUFFICIENT;
+import static com.arpc.sotnim.core.ErrorCodes.BAD_CURRENCY;
+import static com.arpc.sotnim.core.ErrorCodes.BALANCE_NOT_SUFFICIENT;
 import static com.arpc.sotnim.currency.ExchangeRateHelper.getExchangeRate;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;

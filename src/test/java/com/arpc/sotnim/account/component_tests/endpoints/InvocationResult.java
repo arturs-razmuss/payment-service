@@ -1,6 +1,6 @@
 package com.arpc.sotnim.account.component_tests.endpoints;
 
-import com.arpc.sotnim.core.boundary.dto.RestResponse;
+import com.arpc.sotnim.core.dto.RestResponse;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;

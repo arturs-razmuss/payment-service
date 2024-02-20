@@ -3,7 +3,7 @@ package com.arpc.sotnim.account.boundary;
 import com.arpc.sotnim.account.boundary.dto.PaymentRequest;
 import com.arpc.sotnim.account.boundary.dto.PaymentResponse;
 import com.arpc.sotnim.account.control.PaymentService;
-import com.arpc.sotnim.core.boundary.dto.RestResponse;
+import com.arpc.sotnim.core.dto.RestResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;

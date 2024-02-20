@@ -1,8 +1,8 @@
 package com.arpc.sotnim.config;
 
-import com.arpc.sotnim.core.boundary.ErrorCodes;
-import com.arpc.sotnim.core.boundary.RequestProcessingException;
-import com.arpc.sotnim.core.boundary.dto.RestResponse;
+import com.arpc.sotnim.core.ErrorCodes;
+import com.arpc.sotnim.core.RequestProcessingException;
+import com.arpc.sotnim.core.dto.RestResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;

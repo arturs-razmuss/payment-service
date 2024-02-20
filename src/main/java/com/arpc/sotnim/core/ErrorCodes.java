@@ -1,4 +1,4 @@
-package com.arpc.sotnim.core.boundary;
+package com.arpc.sotnim.core;
 
 import lombok.Getter;
 import lombok.ToString;

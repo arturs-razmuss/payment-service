@@ -1,7 +1,7 @@
 package com.arpc.sotnim.account.entity;
 
-import com.arpc.sotnim.core.boundary.ErrorCodes;
-import com.arpc.sotnim.core.boundary.RequestProcessingException;
+import com.arpc.sotnim.core.ErrorCodes;
+import com.arpc.sotnim.core.RequestProcessingException;
 
 import javax.money.MonetaryAmount;
 import java.math.BigDecimal;
